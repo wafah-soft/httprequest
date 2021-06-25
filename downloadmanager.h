@@ -11,6 +11,7 @@
 #include <QSslError>
 #include <QStringList>
 #include <QElapsedTimer>
+#include <QEventLoop>
 #include <QUrl>
 
 #include <stdio.h>
