@@ -12,6 +12,7 @@ void DownloadManager::do_download(const QUrl &url)
     QEventLoop loop;
 
     connect(&manager, SIGNAL(finished(QNetworkReply*)), &loop, SLOT(quit()));
+    connect(&manager, SIGNAL(finished(QNetworkReply*)), SLOT(download_finished(QNetworkReply*)));
 
     QNetworkRequest request(url);
     QNetworkReply *reply = manager.get(request);
@@ -30,7 +31,7 @@ void DownloadManager::do_download(const QUrl &url)
 
     currentDownloads.append(reply);
 
-    download_finished(reply);
+//    download_finished(reply);
 }
 
 QString DownloadManager::save_file_name(const QUrl &url)
