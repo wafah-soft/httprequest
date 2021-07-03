@@ -1,10 +1,13 @@
 #include "downloadmanager.h"
 #include <QDir>
 #include <QDebug>
+#include <QSslCertificate>
+#include <QSsl>
+#include <QSslSocket>
 
 DownloadManager::DownloadManager()
 {
-
+    
 }
 
 void DownloadManager::do_download(const QUrl &url)
@@ -17,6 +20,9 @@ void DownloadManager::do_download(const QUrl &url)
     QNetworkRequest request(url);
     QNetworkReply *reply = manager.get(request);
 
+    downloadTimer.start();
+
+
 #ifndef QT_NO_SSL
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
             SLOT(sslErrors(QList<QSslError>)));
@@ -27,7 +33,6 @@ void DownloadManager::do_download(const QUrl &url)
 
     loop.exec();
 
-    downloadTimer.start();
 
     currentDownloads.append(reply);
 
