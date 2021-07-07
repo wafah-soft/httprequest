@@ -4,6 +4,8 @@
 #include <QSslCertificate>
 #include <QSsl>
 #include <QSslSocket>
+#include "httpclient.h"
+
 
 DownloadManager::DownloadManager()
 {
@@ -130,6 +132,27 @@ void DownloadManager::downloadProgress(qint64 downloaded, qint64 total)
 void DownloadManager::setOutput_filename(const QString &value)
 {
     output_filename = value;
+}
+
+void DownloadManager::send_post(QString url, wafah_data *data)
+{
+    wafah_handler handler;
+    handler.curl = NULL;
+
+    std::string response;
+
+    //check header is empty or not
+    if(!data->headers.isEmpty()) {
+
+        auto list_of_header = data->headers.split("::");
+
+        foreach(auto it, list_of_header) {
+            handler.chunk = curl_slist_append(handler.chunk, it.toLocal8Bit().data());
+        }
+
+    }
+
+    http_post(&handler, url.toStdString().c_str(), data);
 }
 
 void DownloadManager::set_download_callback(const download_progress &value)

@@ -13,10 +13,9 @@
 #include <QElapsedTimer>
 #include <QEventLoop>
 #include <QUrl>
-
 #include <stdio.h>
+#include "httpclientdef.h"
 
-typedef void(__stdcall *download_progress)(int percentage, QString speed, qint64 total);
 
 class DownloadManager : public QObject
 {
@@ -31,6 +30,8 @@ public:
 
     void setOutput_filename(const QString &value);
 
+    void send_post(QString url, wafah_data *data);
+
 public slots:
     void execute();
     void download_finished(QNetworkReply *reply);
@@ -44,6 +45,7 @@ private:
     download_progress dl_progress;
     QElapsedTimer downloadTimer;
     QString output_filename;
+
 };
 
 #endif // DOWNLOADMANAGER_H

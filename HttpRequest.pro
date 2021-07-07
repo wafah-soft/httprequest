@@ -21,11 +21,14 @@ DESTDIR         += D:\TFM\TFMHttpReqeustLibrary
 
 SOURCES += \
     downloadmanager.cpp \
+    httpclient.cpp \
     httprequest.cpp
 
 
 HEADERS += \
     downloadmanager.h \
+    httpclient.h \
+    httpclientdef.h \
     httprequest.h
 
 # Default rules for deployment.
@@ -33,3 +36,13 @@ unix {
     target.path = $$[QT_INSTALL_PLUGINS]/generic
 }
 !isEmpty(target.path): INSTALLS += target
+
+win32: LIBS += -L$$PWD/network_lib/openssl/ -llibcrypto \
+                            -lssh   \
+                            -llibssl
+
+win32: LIBS += -L$$PWD/network_lib/curl/ -llibcurl
+
+INCLUDEPATH += $$PWD/network_lib/openssl
+INCLUDEPATH += $$PWD/network_lib/curl
+INCLUDEPATH += $$PWD/network_lib

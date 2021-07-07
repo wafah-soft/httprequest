@@ -3,11 +3,15 @@
 
 
 #include <QString>
+#include "downloadmanager.h"
 
-typedef void(__stdcall *download_info)(int percent, QString info, qint64 total_byte);
 
-void download_file(QString url, QString &save_file_name, download_info &info);
+void download_file(QString url, QString &save_file_name, download_progress &info);
 
-std::string get_file_name(std::string url);
+QString get_file_name_from_url(QString url);
+
+void send_post_request(QString url, wafah_data *data);
+
+
 
 #endif // HTTPREQUEST_H
