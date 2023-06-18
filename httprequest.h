@@ -3,15 +3,33 @@
 
 
 #include <QString>
-#include "downloadmanager.h"
+#include "httpclientdef.h"
+#include <QNetworkReply>
 
-
-void download_file(QString url, QString &save_file_name, download_progress &info);
+#ifndef qtnetwork
 
 QString get_file_name_from_url(QString url);
 
-void send_post_request(QString url, wafah_data *data);
+CURLcode send_post_request(QString url, wafah_data *data);
 
+CURLcode send_get_request(QString url, wafah_data *data);
 
+CURLcode https_download_file(wafah_download_arg *arg);
+
+quint64 get_remote_file_size(QString url);
+
+#else
+
+QNetworkReply::NetworkError qsend_post_request(const QString &url, wafah_data *data);
+
+QNetworkReply::NetworkError qsend_get_request(const QString &url, wafah_data *data);
+
+QNetworkReply::NetworkError qhttps_download_file(wafah_download_arg *arg);
+
+uint64_t qget_remote_file_size(const QString &url);
+
+#endif
+
+const char *qcurl_easy_strerror(int error);
 
 #endif // HTTPREQUEST_H
