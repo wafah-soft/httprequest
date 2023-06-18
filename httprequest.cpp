@@ -51,22 +51,22 @@
 QNetworkReply::NetworkError qsend_post_request(const QString &url, wafah_data *data) {
     QtNetworkRequest request;
     QByteArray postData = data->post_data.toLocal8Bit(); // Assuming you have a method to convert wafah_data to QByteArray
-    QNetworkReply::NetworkError result = request.post(url.toStdString(), postData, data->response, data->header_list);
-    return result;
+    auto result = request.post(url.toStdString(), postData, data->response, data->header_list);
+    return result.get();
 }
 
 QNetworkReply::NetworkError qsend_get_request(const QString &url, wafah_data *data) {
     QtNetworkRequest request;
-    QNetworkReply::NetworkError result = request.get(url.toStdString(), data->response, data->header_list);
-    return result;
+    auto result = request.get(url.toStdString(), data->response, data->header_list);
+    return result.get();
 }
 
 
 
 uint64_t qget_remote_file_size(const QString &url) {
     QtNetworkRequest request;
-    qint64 fileSize = request.wgetFileSize(url.toStdString());
-    return fileSize;
+    auto fileSize = request.agetFileSize(url.toStdString());
+    return fileSize.get();
 }
 
 QNetworkReply::NetworkError qhttps_download_file(wafah_download_arg *arg) {

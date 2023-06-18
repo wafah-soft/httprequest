@@ -25,9 +25,10 @@ public:
     void initSession();
     void destroySession();
 
-    QNetworkReply::NetworkError get(const std::string &url, std::string &response, const std::map<std::string, std::string> &headers = {});
-    QNetworkReply::NetworkError post(const std::string &url, const QByteArray &data, std::string &response, const std::map<std::string, std::string> &headers = {});
-    QNetworkReply::NetworkError downloadFile(const std::string &url, const std::string &destination, int numChunks = 4);
+    std::future<QNetworkReply::NetworkError> get(const std::string &url, std::string &response, const std::map<std::string, std::string> &headers);
+
+    std::future<QNetworkReply::NetworkError> post(const std::string &url, const QByteArray &data, std::string &response, const std::map<std::string, std::string> &headers);    QNetworkReply::NetworkError downloadFile(const std::string &url, const std::string &destination, int numChunks = 4);
+
     qint64 getFileSize(const std::string &url);
     uint64_t wgetFileSize(const std::string &url);
     std::future<qint64> agetFileSize(const std::string &url);

@@ -33,45 +33,39 @@ void QtNetworkRequest::initSession() {
 void QtNetworkRequest::destroySession() {
 }
 
-QNetworkReply::NetworkError QtNetworkRequest::get(const std::string &url, std::string &response, const std::map<std::string, std::string> &headers) {
+std::future<QNetworkReply::NetworkError> QtNetworkRequest::get(const std::string &url, std::string &response, const std::map<std::string, std::string> &headers) {
     QNetworkRequest request = createRequest(QString::fromStdString(url), headers);
-    networkReply = networkAccessManager.get(request);
+    QNetworkReply* networkReply = networkAccessManager.get(request);
+    auto promise = std::make_shared<std::promise<QNetworkReply::NetworkError>>();
 
-    QEventLoop loop;
-    connect(networkReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec();
+    connect(networkReply, &QNetworkReply::finished, [networkReply, promise, &response] {
+        response = networkReply->readAll().toStdString();
+        QNetworkReply::NetworkError error = networkReply->error();
+        networkReply->deleteLater();
+        promise->set_value(error);
+    });
 
-    response = networkReply->readAll().toStdString();
-    QNetworkReply::NetworkError error = networkReply->error();
-    networkReply->deleteLater();
-    networkReply = nullptr;
-
-
-    return error;
+    return promise->get_future();
 }
 
-QNetworkReply::NetworkError QtNetworkRequest::post(const std::string &url, const QByteArray &data, std::string &response, const std::map<std::string, std::string> &headers) {
+std::future<QNetworkReply::NetworkError> QtNetworkRequest::post(const std::string &url, const QByteArray &data, std::string &response, const std::map<std::string, std::string> &headers) {
     QNetworkRequest request = createRequest(QString::fromStdString(url), headers);
-    networkReply = networkAccessManager.post(request, data);
+    QNetworkReply* networkReply = networkAccessManager.post(request, data);
+    auto promise = std::make_shared<std::promise<QNetworkReply::NetworkError>>();
 
-    QEventLoop loop;
-    connect(networkReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec();
+    connect(networkReply, &QNetworkReply::finished, [networkReply, promise, &response] {
+        response = networkReply->readAll().toStdString();
+        QNetworkReply::NetworkError error = networkReply->error();
+        networkReply->deleteLater();
+        promise->set_value(error);
+    });
 
-    QNetworkReply::NetworkError error = networkReply->error();
-
-    response = networkReply->readAll().toStdString();
-
-    networkReply->deleteLater();
-    networkReply = nullptr;
-
-
-    return error;
+    return promise->get_future();
 }
 
 QNetworkReply::NetworkError QtNetworkRequest::downloadFile(const std::string &url, const std::string &destination, int numChunks) {
 
-    qint64 fileSize = getFileSize(url);
+    qint64 fileSize = agetFileSize(url).get();
     if (fileSize <= 0) {
        return QNetworkReply::ContentNotFoundError;
     }
