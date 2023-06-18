@@ -48,33 +48,30 @@
 
 #else
 
-QNetworkReply::NetworkError qsend_post_request(const QString &url, wafah_data *data) {
+std::future<QNetworkReply::NetworkError> qsend_post_request(const QString &url, wafah_data *data) {
     QtNetworkRequest request;
     QByteArray postData = data->post_data.toLocal8Bit(); // Assuming you have a method to convert wafah_data to QByteArray
     auto result = request.post(url.toStdString(), postData, data->response, data->header_list);
-    return result.get();
+    return result;
 }
 
-QNetworkReply::NetworkError qsend_get_request(const QString &url, wafah_data *data) {
+std::future<QNetworkReply::NetworkError> qsend_get_request(const QString &url, wafah_data *data) {
     QtNetworkRequest request;
     auto result = request.get(url.toStdString(), data->response, data->header_list);
-    return result.get();
+    return result;
 }
 
-
-
-uint64_t qget_remote_file_size(const QString &url) {
+std::future<qint64> qget_remote_file_size(const QString &url) {
     QtNetworkRequest request;
-    auto fileSize = request.agetFileSize(url.toStdString());
-    return fileSize.get();
+    auto result = request.agetFileSize(url.toStdString());
+    return result;
 }
 
 QNetworkReply::NetworkError qhttps_download_file(wafah_download_arg *arg) {
     QtNetworkRequest request;
     request.setProgressCallback(arg->pcallback);
     request.setTProgressCallback(arg->chunkProgressCallback);
-    QNetworkReply::NetworkError result = request.downloadFile(arg->url.toStdString(), arg->file_name.toStdString(), 4);
-    return result;
+    return request.downloadFile(arg->url.toStdString(), arg->file_name.toStdString(), 4);
 }
 
 #endif
