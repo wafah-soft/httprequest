@@ -70,8 +70,7 @@ QNetworkReply::NetworkError QtNetworkRequest::post(const std::string &url, const
 }
 
 QNetworkReply::NetworkError QtNetworkRequest::downloadFile(const std::string &url, const std::string &destination, int numChunks) {
-
-    qint64 fileSize = getFileSize(url);
+    qint64 fileSize = wgetFileSize(url);
     if (fileSize <= 0) {
        return QNetworkReply::ContentNotFoundError;
     }
