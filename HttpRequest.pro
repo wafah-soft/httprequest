@@ -71,3 +71,6 @@ LIBS += -lcurl -lcrypto -lssl -lWldap32 -lcrypt32
 INCLUDEPATH += $$PWD/network_lib/openssl
 INCLUDEPATH += $$PWD/network_lib/curl
 INCLUDEPATH += $$PWD/network_lib
+
+
+include(qtpromise/qtpromise.pri)

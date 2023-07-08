@@ -31,9 +31,9 @@ QNetworkReply::NetworkError QtNetworkRequest::get(const std::string &url, std::s
     QNetworkRequest request = createRequest(QString::fromStdString(url), headers);
     networkReply = networkAccessManager.get(request);
 
-    QTimer loop;
-    connect(networkReply, &QNetworkReply::finished, &loop, &QTimer::stop);
-    loop.start();
+    QEventLoop loop;
+    connect(networkReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
 
     response = networkReply->readAll().toStdString();
     QNetworkReply::NetworkError error = networkReply->error();
@@ -47,7 +47,9 @@ QNetworkReply::NetworkError QtNetworkRequest::post(const std::string &url, const
     QNetworkRequest request = createRequest(QString::fromStdString(url), headers);
     networkReply = networkAccessManager.post(request, data);
 
-    connect(networkReply, &QNetworkReply::finished, &loop, &QTimer::stop);
+    QEventLoop loop;
+    connect(networkReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
 
     QNetworkReply::NetworkError error = networkReply->error();
 
