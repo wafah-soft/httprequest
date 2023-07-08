@@ -2,3 +2,4 @@
 *.db
 .vs
 .qtc_clangd
+*.idx

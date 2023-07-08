@@ -22,12 +22,9 @@ public:
     QtNetworkRequest(QObject *parent = nullptr);
     ~QtNetworkRequest();
 
-    void initSession();
-    void destroySession();
+    QNetworkReply::NetworkError get(const std::string &url, std::string &response, const std::map<std::string, std::string> &headers);
 
-    std::future<QNetworkReply::NetworkError> get(const std::string &url, std::string &response, const std::map<std::string, std::string> &headers);
-
-    std::future<QNetworkReply::NetworkError> post(const std::string &url, const QByteArray &data, std::string &response, const std::map<std::string, std::string> &headers);    QNetworkReply::NetworkError downloadFile(const std::string &url, const std::string &destination, int numChunks = 4);
+    QNetworkReply::NetworkError post(const std::string &url, const QByteArray &data, std::string &response, const std::map<std::string, std::string> &headers);    QNetworkReply::NetworkError downloadFile(const std::string &url, const std::string &destination, int numChunks = 4);
 
     qint64 getFileSize(const std::string &url);
     uint64_t wgetFileSize(const std::string &url);
@@ -38,6 +35,9 @@ public:
 
     void setProgressCallback(std::function<void(double, double, qint64)> callback);
     void setTProgressCallback(std::function<void(double, double, qint64, int)> callback);
+
+
+    static QtNetworkRequest *qhttp();
 
 private slots:
     void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);

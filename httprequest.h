@@ -21,11 +21,11 @@ quint64 get_remote_file_size(QString url);
 
 #else
 
-std::future<QNetworkReply::NetworkError> qsend_post_request(const QString &url, wafah_data *data);
+QNetworkReply::NetworkError qsend_post_request(const QString &url, wafah_data *data);
 
-std::future<QNetworkReply::NetworkError> qsend_get_request(const QString &url, wafah_data *data);
+QNetworkReply::NetworkError qsend_get_request(const QString &url, wafah_data *data);
 
-std::future<qint64> qget_remote_file_size(const QString &url);
+qint64 qget_remote_file_size(const QString &url);
 
 QNetworkReply::NetworkError qhttps_download_file(wafah_download_arg *arg);
 
